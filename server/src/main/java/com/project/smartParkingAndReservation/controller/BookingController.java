@@ -19,8 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/booking")
 @CrossOrigin("*")
-public class BookingController
-{
+public class BookingController {
+
     @Autowired
     private IBookingService service;
 
@@ -41,164 +41,302 @@ public class BookingController
             @RequestParam LocalDateTime endTime) {
 
         HashMap<String, Object> res = new HashMap<>();
+
         try {
-            ParkingPlace parkingPlace = parkingPlaceService.findParkingPlaceByLenderId(lenderId);
 
-            User user = userService.getUserById(userId);
+            ParkingPlace parkingPlace =
+                    parkingPlaceService.findParkingPlaceByLenderId(lenderId);
 
-            Booking booking = service.bookParkingPlace(parkingPlace,user,startTime, endTime);
+            User user =
+                    userService.getUserById(userId);
+
+            Booking booking =
+                    service.bookParkingPlace(
+                            parkingPlace,
+                            user,
+                            startTime,
+                            endTime
+                    );
 
             res.put("success", true);
             res.put("msg", "Parking place booked successfully.");
             res.put("bookingId", booking.getId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(res);
 
         } catch (IllegalStateException e) {
+
             res.put("success", false);
             res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while booking the parking place.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("msg",
+                    "An error occurred while booking the parking place.");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @PostMapping("/release/{bookingId}")
-    public ResponseEntity<?> releaseParkingPlace(@PathVariable Long bookingId) {
+    public ResponseEntity<?> releaseParkingPlace(
+            @PathVariable Long bookingId) {
+
         HashMap<String, Object> res = new HashMap<>();
+
         try {
-            Booking booking = service.getBookingById(bookingId);
+
+            Booking booking =
+                    service.getBookingById(bookingId);
+
             service.releaseParkingPlace(booking);
 
             res.put("success", true);
             res.put("msg", "Parking place released successfully.");
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+
+            return ResponseEntity.ok(res);
 
         } catch (IllegalArgumentException e) {
+
             res.put("success", false);
             res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while releasing the parking place.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("msg",
+                    "An error occurred while releasing the parking place.");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @PostMapping("/update/status/{bookingId}")
-    public ResponseEntity<?> updateBooking(@PathVariable Long bookingId,@RequestParam String status)
-    {
+    public ResponseEntity<?> updateBooking(
+            @PathVariable Long bookingId,
+            @RequestParam String status) {
+
         HashMap<String, Object> res = new HashMap<>();
+
         try {
-            Booking booking = service.getBookingById(bookingId);
+
+            Booking booking =
+                    service.getBookingById(bookingId);
+
             booking.setStatus(status);
+
             service.updateBooking(booking);
+
             res.put("success", true);
-            res.put("msg", "Booking Updated successfully.");
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+            res.put("msg", "Booking updated successfully.");
+
+            return ResponseEntity.ok(res);
 
         } catch (IllegalArgumentException e) {
+
             res.put("success", false);
             res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while booking the place.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("msg",
+                    "An error occurred while updating booking.");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getBookingsByUserId(@PathVariable Long userId)
-    {
-        HashMap<String,Object> res = new HashMap<>();
-        try
-        {
-            List<Booking> bookings = service.findByUserId(userId);
-            res.put("success",true);
-            res.put("bookings",bookings);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        }
-        catch (Exception e)
-        {
-            res.put("success",false);
-            res.put("err","Failed to fetch the user bookings"+userId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    public ResponseEntity<?> getBookingsByUserId(
+            @PathVariable Long userId) {
+
+        HashMap<String, Object> res = new HashMap<>();
+
+        try {
+
+            List<Booking> bookings =
+                    service.findByUserId(userId);
+
+            res.put("success", true);
+            res.put("bookings",
+                    bookings == null ? List.of() : bookings);
+
+            return ResponseEntity.ok(res);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            res.put("success", false);
+            res.put("bookings", List.of());
+            res.put("err", e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllBookings() {
-        HashMap<String,Object> res = new HashMap<>();
-        try
-        {
-            List<Booking> bookings = service.getAllBookings();
-            res.put("success",true);
-            res.put("bookings",bookings);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        }
-        catch (Exception e)
-        {
-            res.put("success",false);
-            res.put("err","Failed to fetch the user bookings");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+
+        HashMap<String, Object> res = new HashMap<>();
+
+        try {
+
+            List<Booking> bookings =
+                    service.getAllBookings();
+
+            res.put("success", true);
+            res.put("bookings",
+                    bookings == null ? List.of() : bookings);
+
+            return ResponseEntity.ok(res);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            res.put("success", false);
+            res.put("bookings", List.of());
+            res.put("err", e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBooking(
+            @PathVariable Long id) {
+
         HashMap<String, Object> res = new HashMap<>();
+
         try {
+
             service.deleteBookingById(id);
+
             res.put("success", true);
             res.put("msg", "Booking deleted successfully.");
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+
+            return ResponseEntity.ok(res);
 
         } catch (IllegalArgumentException e) {
+
             res.put("success", false);
             res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while deleting the booking.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("msg",
+                    "An error occurred while deleting booking.");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @GetMapping("/lender/{lenderId}")
-    public ResponseEntity<?> getBookingByLenderId(@PathVariable Long lenderId) {
+    public ResponseEntity<?> getBookingByLenderId(
+            @PathVariable Long lenderId) {
+
         HashMap<String, Object> res = new HashMap<>();
+
         try {
-            List<Booking> bookings = service.getBookingByLenderId(lenderId);
-            res.put("success",true);
-            res.put("bookings",bookings);
+
+            List<Booking> bookings =
+                    service.getBookingByLenderId(lenderId);
+
+            res.put("success", true);
+            res.put("bookings",
+                    bookings == null ? List.of() : bookings);
+
             return ResponseEntity.ok(res);
-        } catch (IllegalArgumentException e) {
-            res.put("success", false);
-            res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while retrieving the booking.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("bookings", List.of());
+            res.put("msg", e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBookingById(@PathVariable Long id) {
+    public ResponseEntity<?> getBookingById(
+            @PathVariable Long id) {
+
         HashMap<String, Object> res = new HashMap<>();
+
         try {
-            Booking booking = service.getBookingById(id);
+
+            Booking booking =
+                    service.getBookingById(id);
+
             return ResponseEntity.ok(booking);
+
         } catch (IllegalArgumentException e) {
+
             res.put("success", false);
             res.put("msg", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(res);
+
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             res.put("success", false);
-            res.put("msg", "An error occurred while retrieving the booking.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            res.put("msg",
+                    "An error occurred while retrieving booking.");
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(res);
         }
     }
 }

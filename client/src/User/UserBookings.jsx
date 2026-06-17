@@ -10,7 +10,7 @@ const UserBookings = () => {
   const [releaseSuccess, setReleaseSuccess] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user ? user.id : null;
+  const userId = user?.id;
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -19,9 +19,19 @@ const UserBookings = () => {
           `/booking/user/${userId}`
         );
 
-        setBookings(response.data.bookings);
+        console.log("Bookings Response:", response.data);
+
+        const bookingData = Array.isArray(response.data?.bookings)
+          ? response.data.bookings
+          : [];
+
+        setBookings(bookingData);
         setError(null);
+
       } catch (error) {
+        console.error(error);
+
+        setBookings([]);
         setError(
           "Failed to fetch bookings. Please try again later."
         );
@@ -44,7 +54,7 @@ const UserBookings = () => {
         `/booking/release/${bookingId}`
       );
 
-      if (response.data.success) {
+      if (response.data?.success) {
         setReleaseSuccess(
           `Parking place for booking ${bookingId} released successfully.`
         );
@@ -57,24 +67,28 @@ const UserBookings = () => {
 
         setReleaseError(null);
       } else {
-        setReleaseError(response.data.msg);
+        setReleaseError(
+          response.data?.msg ||
+            "Failed to release parking place."
+        );
       }
     } catch (error) {
+      console.error(error);
       setReleaseError(
         "An error occurred while releasing the parking place."
       );
     }
   };
 
-const activeBookings = bookings.filter(
-  (booking) =>
-    booking.status === "Accepted" ||
-    booking.status === "Pending"
-).length;
+  const activeBookings = (bookings || []).filter(
+    (booking) =>
+      booking?.status === "Accepted" ||
+      booking?.status === "Pending"
+  ).length;
 
-const releasedBookings = bookings.filter(
-  (booking) => booking.status === "Released"
-).length;
+  const releasedBookings = (bookings || []).filter(
+    (booking) => booking?.status === "Released"
+  ).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black">
@@ -82,7 +96,6 @@ const releasedBookings = bookings.filter(
 
       <div className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white">
             My Bookings
@@ -93,7 +106,6 @@ const releasedBookings = bookings.filter(
           </p>
         </div>
 
-        {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
 
           <div className="bg-slate-900/80 border border-slate-700 rounded-3xl p-6">
@@ -122,13 +134,12 @@ const releasedBookings = bookings.filter(
             </h3>
 
             <p className="text-4xl font-bold text-cyan-400 mt-2">
-  {releasedBookings}
-</p>
+              {releasedBookings}
+            </p>
           </div>
 
         </div>
 
-        {/* Alerts */}
         {releaseSuccess && (
           <div className="mb-6 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 p-4 rounded-2xl">
             {releaseSuccess}
@@ -141,7 +152,6 @@ const releasedBookings = bookings.filter(
           </div>
         )}
 
-        {/* Content */}
         {loading ? (
           <div className="bg-slate-900 border border-slate-700 rounded-3xl p-10 text-center">
             <p className="text-slate-400">
@@ -173,19 +183,19 @@ const releasedBookings = bookings.filter(
                     Booking #{booking.id}
                   </h2>
 
-              <span
-  className={`px-3 py-1 rounded-xl text-sm font-medium ${
-    booking.status === "Accepted"
-      ? "bg-emerald-500/20 text-emerald-400"
-      : booking.status === "Pending"
-      ? "bg-yellow-500/20 text-yellow-400"
-      : booking.status === "Released"
-      ? "bg-cyan-500/20 text-cyan-400"
-      : "bg-red-500/20 text-red-400"
-  }`}
->
-  {booking.status}
-</span>
+                  <span
+                    className={`px-3 py-1 rounded-xl text-sm font-medium ${
+                      booking.status === "Accepted"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : booking.status === "Pending"
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : booking.status === "Released"
+                        ? "bg-cyan-500/20 text-cyan-400"
+                        : "bg-red-500/20 text-red-400"
+                    }`}
+                  >
+                    {booking.status}
+                  </span>
 
                 </div>
 
@@ -193,46 +203,50 @@ const releasedBookings = bookings.filter(
 
                   <p>
                     <strong>Parking:</strong>{" "}
-                    {booking.parkingPlace.placeName}
+                    {booking.parkingPlace?.placeName || "N/A"}
                   </p>
 
                   <p>
                     <strong>Area:</strong>{" "}
-                    {booking.parkingPlace.areaName}
+                    {booking.parkingPlace?.areaName || "N/A"}
                   </p>
 
                   <p>
                     <strong>Lender:</strong>{" "}
-                    {booking.parkingPlace.lender.name}
+                    {booking.parkingPlace?.lender?.name || "N/A"}
                   </p>
 
                   <p>
                     <strong>Reserved:</strong><br />
-                    {new Date(
-                      booking.reservationTime
-                    ).toLocaleString()}
+                    {booking.reservationTime
+                      ? new Date(
+                          booking.reservationTime
+                        ).toLocaleString()
+                      : "N/A"}
                   </p>
 
                   <p>
                     <strong>Start:</strong><br />
-                    {new Date(
-                      booking.startTime
-                    ).toLocaleString()}
+                    {booking.startTime
+                      ? new Date(
+                          booking.startTime
+                        ).toLocaleString()
+                      : "N/A"}
                   </p>
 
                   <p>
                     <strong>End:</strong><br />
-                    {new Date(
-                      booking.endTime
-                    ).toLocaleString()}
+                    {booking.endTime
+                      ? new Date(
+                          booking.endTime
+                        ).toLocaleString()
+                      : "N/A"}
                   </p>
 
                 </div>
 
-                {(
-  booking.status === "Accepted" ||
-  booking.status === "Pending"
-) && (
+                {(booking.status === "Accepted" ||
+                  booking.status === "Pending") && (
                   <button
                     onClick={() =>
                       releaseParkingPlace(booking.id)

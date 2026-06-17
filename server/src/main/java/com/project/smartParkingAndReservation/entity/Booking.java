@@ -1,11 +1,8 @@
 package com.project.smartParkingAndReservation.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,23 +12,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "parking_place_id")
+    @JsonIgnoreProperties({"bookings"})
     private ParkingPlace parkingPlace;
 
     @ManyToOne
+    @JsonIgnoreProperties({"password"})
     private User user;
+
     private String status;
+
     private LocalDateTime reservationTime;
+
     private LocalDateTime startTime;
+
     private LocalDateTime endTime;
 
     public boolean isActive() {
         LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(startTime) && now.isBefore(endTime);
+        return now.isAfter(startTime)
+                && now.isBefore(endTime);
     }
 }
-

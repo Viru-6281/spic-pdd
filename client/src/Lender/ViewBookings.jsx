@@ -167,81 +167,79 @@ const ViewBookings = () => {
                   </tr>
                 </thead>
 
-                <tbody>
+<tbody>
+  {bookings.map((booking) => (
+    <tr
+      key={booking?.id}
+      className="border-t border-slate-800 text-center hover:bg-slate-800/30"
+    >
+      <td className="p-4">
+        {booking?.id || "N/A"}
+      </td>
 
-                  {bookings.map((booking) => (
-                    <tr
-                      key={booking.id}
-                      className="border-t border-slate-800 text-center hover:bg-slate-800/30"
-                    >
-                      <td className="p-4">
-                        {booking.id}
-                      </td>
+      <td className="p-4">
+        {booking?.parkingPlace?.placeName || "N/A"}
+      </td>
 
-                      <td className="p-4">
-                        {booking.parkingPlace.placeName}
-                      </td>
+      <td className="p-4">
+        {booking?.user?.name || "N/A"}
+      </td>
 
-                      <td className="p-4">
-                        {booking.user.name}
-                      </td>
+      <td className="p-4">
+        <select
+          className="bg-slate-800 border border-slate-700 rounded-xl p-2 text-white"
+          value={booking?.status || "Pending"}
+          onChange={(e) =>
+            updateBookingStatus(
+              booking.id,
+              e.target.value
+            )
+          }
+        >
+          <option value="Pending">Pending</option>
+          <option value="Accepted">Accepted</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </td>
 
-                      <td className="p-4">
-                        <select
-                          className="bg-slate-800 border border-slate-700 rounded-xl p-2 text-white"
-                          value={booking.status}
-                          onChange={(e) =>
-                            updateBookingStatus(
-                              booking.id,
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="Pending">
-                            Pending
-                          </option>
-                          <option value="Accepted">
-                            Accepted
-                          </option>
-                          <option value="Rejected">
-                            Rejected
-                          </option>
-                        </select>
-                      </td>
+      <td className="p-4">
+        {booking?.reservationTime
+          ? new Date(
+              booking.reservationTime
+            ).toLocaleString()
+          : "N/A"}
+      </td>
 
-                      <td className="p-4">
-                        {new Date(
-                          booking.reservationTime
-                        ).toLocaleString()}
-                      </td>
+      <td className="p-4">
+        {booking?.startTime
+          ? new Date(
+              booking.startTime
+            ).toLocaleString()
+          : "N/A"}
+      </td>
 
-                      <td className="p-4">
-                        {new Date(
-                          booking.startTime
-                        ).toLocaleString()}
-                      </td>
+      <td className="p-4">
+        {booking?.endTime
+          ? new Date(
+              booking.endTime
+            ).toLocaleString()
+          : "N/A"}
+      </td>
 
-                      <td className="p-4">
-                        {new Date(
-                          booking.endTime
-                        ).toLocaleString()}
-                      </td>
-
-                      <td className="p-4">
-                        {booking.active ? (
-                          <span className="text-emerald-400 font-semibold">
-                            Yes
-                          </span>
-                        ) : (
-                          <span className="text-red-400 font-semibold">
-                            No
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-
-                </tbody>
+      <td className="p-4">
+        {booking?.active ? (
+          <span className="text-emerald-400 font-semibold">
+            Yes
+          </span>
+        ) : (
+          <span className="text-red-400 font-semibold">
+            No
+          </span>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
 
               </table>
 

@@ -12,39 +12,64 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class BookingService implements IBookingService
-{
+public class BookingService implements IBookingService {
+
     @Autowired
     private IBookingRepository bookingRepository;
 
     @Override
-    public Booking bookParkingPlace(ParkingPlace parkingPlace, User user, LocalDateTime startTime, LocalDateTime endTime)
-    {
-        if (!parkingPlace.isAvailable()) {
-            throw new IllegalStateException("Parking place is not available for booking.");
+    public Booking bookParkingPlace(
+            ParkingPlace parkingPlace,
+            User user,
+            LocalDateTime startTime,
+            LocalDateTime endTime) {
+
+        if (startTime == null || endTime == null) {
+            throw new IllegalStateException("Start time and End time are required.");
+        }
+
+        if (endTime.isBefore(startTime)) {
+            throw new IllegalStateException(
+                    "End time must be after start time.");
+        }
+
+        List<Booking> existingBookings =
+                bookingRepository.findByParkingPlaceId(parkingPlace.getId());
+
+        for (Booking booking : existingBookings) {
+
+            if ("Released".equalsIgnoreCase(booking.getStatus())) {
+                continue;
+            }
+
+            boolean overlap =
+                    startTime.isBefore(booking.getEndTime())
+                            && endTime.isAfter(booking.getStartTime());
+
+            if (overlap) {
+                throw new IllegalStateException(
+                        "Parking place already booked for selected time.");
+            }
         }
 
         Booking booking = new Booking();
+
         booking.setParkingPlace(parkingPlace);
         booking.setUser(user);
-        booking.setReservationTime(LocalDateTime.now());
         booking.setStatus("Pending");
+        booking.setReservationTime(LocalDateTime.now());
         booking.setStartTime(startTime);
         booking.setEndTime(endTime);
 
-        bookingRepository.save(booking);
-
-        parkingPlace.getBookings().add(booking);
-
-        parkingPlace.setAvailable(false);
-
-        return booking;
+        return bookingRepository.save(booking);
     }
 
     @Override
     public void releaseParkingPlace(Booking booking) {
-        booking.getParkingPlace().setAvailable(true);
-        bookingRepository.delete(booking);
+
+        booking.setStatus("Released");
+
+        bookingRepository.save(booking);
     }
 
     @Override
@@ -69,7 +94,9 @@ public class BookingService implements IBookingService
 
     @Override
     public Booking getBookingById(Long bookingId) {
-        return bookingRepository.findById(bookingId).get();
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Booking not found"));
     }
 
     @Override
