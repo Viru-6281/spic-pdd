@@ -1,0 +1,89 @@
+
+> selenium-tests@1.0.0 test
+> mocha 'tests/**/*.test.js' --timeout 90000 --reporter spec --exit
+
+
+
+  🔐 Login Tests — Smart Parking App
+
+  Target URL: https://Viru-6281.github.io/spic-pdd/
+
+    📸 Screenshot: TC-LOGIN-001_lender_login_1781794275385.png
+    Content length: 3017
+    ✔ TC-LOGIN-001: Lender login page loads and returns content (3001ms)
+    📸 Screenshot: TC-LOGIN-002_lender_email_1781794278165.png
+    ✔ TC-LOGIN-002: Lender login page contains email-related content (2779ms)
+    📸 Screenshot: TC-LOGIN-003_lender_password_1781794280936.png
+    ✔ TC-LOGIN-003: Lender login page contains password-related content (2770ms)
+    📸 Screenshot: TC-LOGIN-004_lender_input_1781794283715.png
+    ✔ TC-LOGIN-004: Lender login page contains an input element (2779ms)
+    📸 Screenshot: TC-LOGIN-005_lender_button_1781794286487.png
+    ✔ TC-LOGIN-005: Lender login page contains a button element (2771ms)
+    📸 Screenshot: TC-LOGIN-006_lender_url_1781794289264.png
+    URL: https://viru-6281.github.io/spic-pdd/#/lenderLogin
+    ✔ TC-LOGIN-006: Lender login URL is correct after navigation (2778ms)
+    📸 Screenshot: TC-LOGIN-007_user_login_1781794292047.png
+    Content length: 2979
+    ✔ TC-LOGIN-007: User login page loads and returns content (2783ms)
+    📸 Screenshot: TC-LOGIN-008_user_email_1781794294818.png
+    ✔ TC-LOGIN-008: User login page contains email-related content (2771ms)
+    📸 Screenshot: TC-LOGIN-009_user_password_1781794297596.png
+    ✔ TC-LOGIN-009: User login page contains password-related content (2777ms)
+    📸 Screenshot: TC-LOGIN-010_both_pages_1781794302880.png
+    Lender login: 3017 chars
+    User login: 2979 chars
+    ✔ TC-LOGIN-010: Both lender and user login pages render distinct content (5283ms)
+
+  🌐 Navigation Tests — Smart Parking App
+
+  Target URL: https://Viru-6281.github.io/spic-pdd/
+
+    📸 Screenshot: TC-NAV-001_homepage_1781794306330.png
+    ✔ TC-NAV-001: Homepage loads with HTTP 200 (site is reachable) (3112ms)
+    📸 Screenshot: TC-NAV-002_react_root_1781794309207.png
+    ✔ TC-NAV-002: Homepage contains React root element (2877ms)
+    📸 Screenshot: TC-NAV-003_title_1781794312055.png
+    Title: "Vite + React"
+    ✔ TC-NAV-003: Page title is a non-empty string (2848ms)
+    📸 Screenshot: TC-NAV-004_lender_login_1781794314847.png
+    ✔ TC-NAV-004: Lender Login route responds (no server error) (2792ms)
+    📸 Screenshot: TC-NAV-005_lender_form_content_1781794317619.png
+    ✔ TC-NAV-005: Lender Login page has form-related HTML (2771ms)
+    📸 Screenshot: TC-NAV-006_user_login_1781794320396.png
+    ✔ TC-NAV-006: User Login route responds (no server error) (2777ms)
+    📸 Screenshot: TC-NAV-007_user_form_content_1781794323168.png
+    ✔ TC-NAV-007: User Login page has form-related HTML (2773ms)
+    📸 Screenshot: TC-NAV-008_user_register_1781794325958.png
+    ✔ TC-NAV-008: User Registration route responds (no server error) (2789ms)
+    📸 Screenshot: TC-NAV-009_user_register_form_1781794328741.png
+    ✔ TC-NAV-009: User Registration page has form-related HTML (2783ms)
+    📸 Screenshot: TC-NAV-010_hash_router_1781794332103.png
+    URL: https://viru-6281.github.io/spic-pdd//#/lenderLogin, Content: 3017 chars
+    ✔ TC-NAV-010: HashRouter — direct URL to /lenderLogin does not 404 (3361ms)
+
+  📝 Registration Tests — Smart Parking App
+
+  Target URL: https://Viru-6281.github.io/spic-pdd/
+
+    📸 Screenshot: TC-REG-001_user_register_1781794335376.png
+    Content length: 3855
+    ✔ TC-REG-001: User Registration page loads successfully (2931ms)
+    📸 Screenshot: TC-REG-002_user_name_content_1781794338153.png
+    ✔ TC-REG-002: User Registration page contains name or user-related content (2777ms)
+    📸 Screenshot: TC-REG-003_user_email_1781794340939.png
+    ✔ TC-REG-003: User Registration page contains email-related content (2785ms)
+    📸 Screenshot: TC-REG-004_user_password_1781794343721.png
+    ✔ TC-REG-004: User Registration page contains password-related content (2783ms)
+    📸 Screenshot: TC-REG-005_user_inputs_1781794346506.png
+    ✔ TC-REG-005: User Registration page contains input elements (2784ms)
+    📸 Screenshot: TC-REG-006_user_button_1781794349288.png
+    ✔ TC-REG-006: User Registration page contains a submit/button element (2782ms)
+    📸 Screenshot: TC-REG-007_lender_register_1781794352240.png
+    Content length: 4598
+    ✔ TC-REG-007: Lender Registration page loads successfully (2952ms)
+    📸 Screenshot: TC-REG-008_lender_content_1781794355185.png
+    ✔ TC-REG-008: Lender Registration page contains registration-related content (2944ms)
+
+
+  28 passing (1m)
+
